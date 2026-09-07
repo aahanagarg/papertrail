@@ -1,0 +1,21 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Caches
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# HuggingFace datasets cache (if pointed locally)
+.cache/
+
+# OS
+.DS_Store
