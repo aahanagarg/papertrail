@@ -48,11 +48,18 @@ def test_answer_f1_unanswerable_scores_abstention_only():
 
 
 def test_is_abstention_detects_common_phrasings():
+    assert is_abstention("UNANSWERABLE")
     assert is_abstention("Not stated in the paper.")
     assert is_abstention("This question is unanswerable.")
     assert is_abstention("The paper does not answer this.")
     assert is_abstention("There is no answer to this question.")
     assert not is_abstention("The accuracy was 92.3%.")
+
+
+def test_is_abstention_does_not_flag_yes_no_answers():
+    # UNANSWERABLE was chosen to not collide with yes/no answers.
+    assert not is_abstention("No")
+    assert not is_abstention("Yes")
 
 
 def test_recall_at_k_hit_and_miss():

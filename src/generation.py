@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
-NOT_STATED = "Not stated in the paper"
+NOT_STATED = "UNANSWERABLE"
 
+# "Not stated in the paper" used to bleed into yes/no answers (the model
+# produced "No stated in the paper"). UNANSWERABLE can't collide with a
+# yes/no answer, so it replaced that phrasing here.
 _SYSTEM_INSTRUCTIONS = (
     "Answer the question using only the context below. "
     "Do not use any outside knowledge. "
@@ -11,6 +14,10 @@ _SYSTEM_INSTRUCTIONS = (
 )
 
 _REMINDER = f'Remember: if the context above does not contain the answer, reply exactly "{NOT_STATED}".'
+
+# Smoke test truncated mid-sentence at 64 new tokens; raised to 128. Log the
+# truncation rate (generations that hit this cap) once the GPU run exists.
+DEFAULT_MAX_NEW_TOKENS = 128
 
 
 def _numbered_context(paragraphs: list[str]) -> str:
