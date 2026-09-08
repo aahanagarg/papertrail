@@ -59,7 +59,9 @@ def main() -> None:
         retrieved_idx = hybrid.retrieve(q.question, TOP_K)
         retrieved_paragraphs = [q.paragraphs[i] for i in retrieved_idx]
 
-        prompt = apply_chat_template(tokenizer, q.question, retrieved_paragraphs)
+        prompt = apply_chat_template(
+            tokenizer, q.question, retrieved_paragraphs, is_yes_no=(q.answer_type == "yes_no")
+        )
         n_tokens = len(tokenizer.encode(prompt))
 
         print("=" * 80)

@@ -11,15 +11,15 @@ from __future__ import annotations
 import re
 import string
 
-from src.generation import NOT_STATED
+from src.generation import ABSTENTION_MARKERS
 
 _ARTICLES = {"a", "an", "the"}
 
-# Legacy phrasings from before the abstention marker was standardized to
-# NOT_STATED ("UNANSWERABLE"); kept as a fallback for predictions that don't
-# follow the current prompt instructions.
+# Legacy phrasings from before the abstention marker was standardized;
+# kept as a fallback for predictions that don't follow the current prompt
+# instructions. "not stated" is covered by ABSTENTION_MARKERS directly
+# (ALT_NOT_STATED = "Not stated in the paper").
 _LEGACY_ABSTENTION_PATTERNS = [
-    "not stated",
     "not mentioned",
     "not specified",
     "not provided",
@@ -69,7 +69,7 @@ def is_abstention(prediction: str) -> bool:
     normalized_pred = normalize(prediction)
     if not normalized_pred:
         return True
-    if normalize(NOT_STATED) in normalized_pred:
+    if any(normalize(marker) in normalized_pred for marker in ABSTENTION_MARKERS):
         return True
     for pattern in _LEGACY_ABSTENTION_PATTERNS:
         if normalize(pattern) in normalized_pred:

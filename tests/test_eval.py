@@ -56,6 +56,13 @@ def test_is_abstention_detects_common_phrasings():
     assert not is_abstention("The accuracy was 92.3%.")
 
 
+def test_is_abstention_detects_both_configurable_markers():
+    # Both markers from generation.ABSTENTION_MARKERS must be detected,
+    # regardless of which one the prompt was configured to use.
+    assert is_abstention("UNANSWERABLE")
+    assert is_abstention("Not stated in the paper")
+
+
 def test_is_abstention_does_not_flag_yes_no_answers():
     # UNANSWERABLE was chosen to not collide with yes/no answers.
     assert not is_abstention("No")
