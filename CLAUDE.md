@@ -37,6 +37,18 @@ for the full project plan.
   `evidence_idx` is non-empty); recall@k must only be computed over records
   where `scorable_retrieval` is `True`.
 
+## Working agreement
+
+- After any experiment, always print the headline numbers AND 5 concrete
+  example cases including failures, with raw text, so results can be
+  sanity-checked by eye.
+- Never describe a metric as "high", "good", or "well above threshold" —
+  always print the number.
+- Before starting a step, state what range of result is expected and why.
+  Flag it if the actual result is outside that range instead of accepting
+  it silently.
+- Never write a number into README.md by hand; read it from `results/`.
+
 ## Hard rule: no fabricated numbers
 
 **Never fabricate, hardcode, or estimate a metric.** Every number that
