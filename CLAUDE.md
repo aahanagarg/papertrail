@@ -48,6 +48,9 @@ for the full project plan.
   Flag it if the actual result is outside that range instead of accepting
   it silently.
 - Never write a number into README.md by hand; read it from `results/`.
+- Never add Co-Authored-By trailers, "Generated with Claude Code" lines, or
+  any attribution footer to commit messages. Commit messages should contain
+  only the conventional commit message itself.
 
 ## Hard rule: no fabricated numbers
 
