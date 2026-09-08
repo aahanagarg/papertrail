@@ -1,4 +1,27 @@
-from src.generation import ALT_NOT_STATED, NOT_STATED, build_messages, build_prompt
+from src.generation import (
+    ALT_NOT_STATED,
+    NOT_STATED,
+    build_messages,
+    build_prompt,
+    looks_like_yes_no,
+)
+
+
+def test_looks_like_yes_no_detects_auxiliary_starters():
+    assert looks_like_yes_no("Did they use BERT?")
+    assert looks_like_yes_no("do they report results on English data?")
+    assert looks_like_yes_no("Is the dataset publicly available?")
+    assert looks_like_yes_no("Are the annotations manually created?")
+    assert looks_like_yes_no("Was the model pretrained?")
+    assert looks_like_yes_no("Can the method generalize to other languages?")
+    assert looks_like_yes_no("Has this been evaluated before?")
+    assert looks_like_yes_no("Will the code be released?")
+
+
+def test_looks_like_yes_no_rejects_wh_questions():
+    assert not looks_like_yes_no("What datasets did they use?")
+    assert not looks_like_yes_no("How many parameters does the model have?")
+    assert not looks_like_yes_no("Which baselines do they compare with?")
 
 
 def test_build_messages_default_marker_is_unanswerable():

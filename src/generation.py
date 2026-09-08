@@ -2,7 +2,27 @@
 
 from __future__ import annotations
 
+import re
+
 NOT_STATED = "UNANSWERABLE"
+
+_YES_NO_STARTERS = (
+    "did", "do", "does", "is", "are", "was", "were",
+    "can", "could", "has", "have", "will", "would",
+)
+_YES_NO_STARTER_RE = re.compile(
+    r"^\s*(" + "|".join(_YES_NO_STARTERS) + r")\b", re.IGNORECASE
+)
+
+
+def looks_like_yes_no(question: str) -> bool:
+    """Heuristic: does `question` look like a yes/no question, from text alone?
+
+    Uses only the question string -- unlike QASPER's answer_type label, this
+    is available at inference time, so it's what a deployed system would use
+    to decide whether to prompt for a yes/no answer.
+    """
+    return bool(_YES_NO_STARTER_RE.match(question))
 
 # "Not stated in the paper" used to bleed into yes/no answers (the model
 # produced "No stated in the paper"). UNANSWERABLE can't collide with a

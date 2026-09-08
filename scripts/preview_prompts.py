@@ -21,7 +21,7 @@ from transformers import AutoTokenizer
 
 from src.data import load_questions
 from src.dense_retrieval import DenseRetriever
-from src.generation import apply_chat_template
+from src.generation import apply_chat_template, looks_like_yes_no
 from src.hybrid_retrieval import HybridRetriever
 from src.retrieval import BM25Retriever
 
@@ -60,7 +60,7 @@ def main() -> None:
         retrieved_paragraphs = [q.paragraphs[i] for i in retrieved_idx]
 
         prompt = apply_chat_template(
-            tokenizer, q.question, retrieved_paragraphs, is_yes_no=(q.answer_type == "yes_no")
+            tokenizer, q.question, retrieved_paragraphs, is_yes_no=looks_like_yes_no(q.question)
         )
         n_tokens = len(tokenizer.encode(prompt))
 
