@@ -2,18 +2,26 @@
 
 Picks 2 extractive, 2 yes_no, and 2 unanswerable validation questions,
 retrieves top-5 paragraphs with the BM25+dense hybrid retriever, builds the
-generation prompt, and prints it in full along with its token count under
-the Qwen2.5-1.5B-Instruct tokenizer -- so the prompts can be read and their
-context-window fit checked before spending any GPU time.
+generation prompt, and prints it in full (rendered through the
+Qwen2.5-1.5B-Instruct chat template) along with its token count -- so the
+prompts can be read and their context-window fit checked before spending
+any GPU time.
+
+Pass an answer_type (extractive, yes_no, unanswerable) as a CLI argument to
+print only questions of that type, e.g.:
+
+    uv run python scripts/preview_prompts.py unanswerable
 """
 
 from __future__ import annotations
+
+import sys
 
 from transformers import AutoTokenizer
 
 from src.data import load_questions
 from src.dense_retrieval import DenseRetriever
-from src.generation import build_prompt
+from src.generation import apply_chat_template
 from src.hybrid_retrieval import HybridRetriever
 from src.retrieval import BM25Retriever
 
@@ -35,8 +43,12 @@ def _select_questions(questions: list) -> list:
 
 
 def main() -> None:
+    answer_type_filter = sys.argv[1] if len(sys.argv) > 1 else None
+
     questions = load_questions("validation")
     selected = _select_questions(questions)
+    if answer_type_filter:
+        selected = [q for q in selected if q.answer_type == answer_type_filter]
 
     tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_NAME)
 
@@ -47,7 +59,7 @@ def main() -> None:
         retrieved_idx = hybrid.retrieve(q.question, TOP_K)
         retrieved_paragraphs = [q.paragraphs[i] for i in retrieved_idx]
 
-        prompt = build_prompt(q.question, retrieved_paragraphs)
+        prompt = apply_chat_template(tokenizer, q.question, retrieved_paragraphs)
         n_tokens = len(tokenizer.encode(prompt))
 
         print("=" * 80)
